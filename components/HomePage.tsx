@@ -1,7 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import type { BlogPost } from '../App';
 
-const HomePage: React.FC = () => {
+const BlogPostCard: React.FC<{ title: string; excerpt: string; imageUrl: string }> = ({ title, excerpt, imageUrl }) => {
+    return (
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full">
+            <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
+            <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{title}</h3>
+                <p className="text-slate-600 mb-4 flex-grow">{excerpt}</p>
+                <Link to="/blog" className="font-semibold text-amber-500 hover:text-amber-600 transition-colors self-start">Read More &rarr;</Link>
+            </div>
+        </div>
+    );
+};
+
+const HomePage: React.FC<{ blogPosts: BlogPost[] }> = ({ blogPosts }) => {
   return (
     <div className="animate-fadeIn">
       {/* Hero Section */}
@@ -101,6 +115,34 @@ const HomePage: React.FC = () => {
               <p className="text-slate-700 italic">"I bought the bundle and it was the best decision. I finished my project ahead of schedule and got an A. Thank you!"</p>
               <div className="mt-4 font-semibold text-slate-900">- Chioma, University of Nigeria</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-4xl font-serif font-bold tracking-tight">From the Blog</h2>
+            <p className="mt-4 text-lg text-slate-600">Get the latest tips and insights on mastering your final year project.</p>
+          </div>
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogPosts.slice(0, 3).map(post => (
+                <BlogPostCard 
+                    key={post.title}
+                    title={post.title}
+                    excerpt={post.excerpt}
+                    imageUrl={post.imageUrl}
+                />
+            ))}
+          </div>
+          <div className="mt-16 text-center">
+            <Link
+              to="/blog"
+              className="inline-block text-lg font-semibold bg-slate-800 text-white px-8 py-3 rounded-lg shadow-md hover:bg-slate-900 transition-colors"
+            >
+              View All Articles
+            </Link>
           </div>
         </div>
       </section>

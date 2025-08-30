@@ -7,15 +7,28 @@ const ContactPage: React.FC = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    setLoading(true);
+
+    // In a real application, you would send the form data to a backend server
+    // or use a third-party service like EmailJS to handle sending the email
+    // to williameleazar51@gmail.com.
+    // It is insecure to store email credentials on the frontend.
+    // This is a simulation of that process.
+    console.log('Form data to be sent:', formData);
+    
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    setLoading(false);
     setSubmitted(true);
     setFormData({ name: '', email: '', message: '' });
     setTimeout(() => setSubmitted(false), 5000); // Reset message after 5 seconds
@@ -79,9 +92,10 @@ const ContactPage: React.FC = () => {
                 <div>
                     <button
                     type="submit"
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-700"
+                    disabled={loading}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-700 disabled:bg-slate-500 disabled:cursor-not-allowed"
                     >
-                    Submit Message
+                    {loading ? 'Sending...' : 'Submit Message'}
                     </button>
                 </div>
                 </form>

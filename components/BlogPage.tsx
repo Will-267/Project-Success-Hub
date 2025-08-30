@@ -1,4 +1,5 @@
 import React from 'react';
+import type { BlogPost } from '../App';
 
 const BlogPostCard: React.FC<{ title: string; excerpt: string; imageUrl: string }> = ({ title, excerpt, imageUrl }) => {
     return (
@@ -14,7 +15,7 @@ const BlogPostCard: React.FC<{ title: string; excerpt: string; imageUrl: string 
 };
 
 
-const BlogPage: React.FC = () => {
+const BlogPage: React.FC<{ blogPosts: BlogPost[] }> = ({ blogPosts }) => {
   return (
     <div className="py-20 bg-slate-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,21 +25,14 @@ const BlogPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <BlogPostCard 
-                title="5 Common Mistakes Students Make in Project Writing"
-                excerpt="Avoid these pitfalls to ensure your project stays on track. We break down the common errors and how to fix them before they become big problems."
-                imageUrl="https://picsum.photos/seed/blog1_new/400/300"
-            />
-            <BlogPostCard 
-                title="How to Use AI Ethically in Your Research"
-                excerpt="Artificial Intelligence is a powerful tool, but using it correctly is key. Learn how to leverage AI for literature reviews and data analysis without plagiarism."
-                imageUrl="https://picsum.photos/seed/blog2_new/400/300"
-            />
-            <BlogPostCard 
-                title="Choosing a Winning Project Topic in 2024"
-                excerpt="The foundation of a great project is a great topic. Discover our framework for finding a topic that is interesting, relevant, and achievable."
-                imageUrl="https://picsum.photos/seed/blog3_new/400/300"
-            />
+            {blogPosts.map((post, index) => (
+                 <BlogPostCard 
+                    key={index}
+                    title={post.title}
+                    excerpt={post.excerpt}
+                    imageUrl={post.imageUrl}
+                />
+            ))}
         </div>
       </div>
     </div>
