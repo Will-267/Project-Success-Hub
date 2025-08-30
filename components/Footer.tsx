@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -13,8 +13,8 @@ const Footer: React.FC = () => {
             <p>&copy; {currentYear} Project Success Hub Nigeria. All rights reserved.</p>
           </div>
           <div className="flex items-center space-x-6">
-            <Link to="/about" className="text-slate-400 hover:text-amber-400 transition-colors">About</Link>
-            <Link to="/contact" className="text-slate-400 hover:text-amber-400 transition-colors">Contact</Link>
+            <Link href="/about" className="text-slate-400 hover:text-amber-400 transition-colors">About</Link>
+            <Link href="/contact" className="text-slate-400 hover:text-amber-400 transition-colors">Contact</Link>
             <a href="https://selar.co/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-amber-400 transition-colors">
               Our Store
             </a>

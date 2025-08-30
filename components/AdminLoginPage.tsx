@@ -1,33 +1,29 @@
+"use client";
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const AdminLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
 
-      if (!response.ok) {
-        throw new Error('Invalid credentials. Please try again.');
-      }
-
-      const { token } = await response.json();
-      localStorage.setItem('authToken', token);
-      navigate('/admin/dashboard');
-
-    } catch (err: any) {
-      setError(err.message);
+    if (result?.error) {
+      setError('Invalid credentials. Please try again.');
+    } else {
+      router.push('/admin/dashboard');
     }
   };
 

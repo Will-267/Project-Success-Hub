@@ -1,31 +1,30 @@
 {
-  "name": "project-success-hub-nigeria",
+  "name": "project-success-hub-nextjs",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "react-router-dom": "^7.8.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "path": "^0.12.7",
-    "jsonwebtoken": "^9.0.2",
-    "body-parser": "^2.2.0",
-    "cors": "^2.8.5",
-    "url": "^0.11.4",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "nanoid": "^5.1.5",
-    "nodemailer": "^7.0.5",
-    "lowdb": "^7.0.1"
+    "mongoose": "^8.4.1",
+    "next": "14.2.3",
+    "next-auth": "^4.24.7",
+    "nodemailer": "^6.9.13",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@tailwindcss/typography": "^0.5.13",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }

@@ -1,53 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { BlogPost } from '../App';
+"use client";
 
-interface BlogPostFormProps {
-  posts?: BlogPost[]; // Keep for finding post data on edit
-  onAdd?: (post: Omit<BlogPost, 'id'>) => void;
-  onUpdate?: (id: string, post: BlogPost) => void;
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+interface BlogPostData {
+  _id?: string;
+  title: string;
+  excerpt: string;
+  imageUrl: string;
 }
 
-const BlogPostForm: React.FC<BlogPostFormProps> = ({ onAdd, onUpdate }) => {
-  const { postId } = useParams<{ postId: string }>();
-  const navigate = useNavigate();
-  const isEditing = postId !== undefined;
+interface BlogPostFormProps {
+  post?: BlogPostData;
+}
 
-  const [formData, setFormData] = useState<Omit<BlogPost, 'id'> & { id?: string }>({
-    title: '',
-    excerpt: '',
-    imageUrl: '',
+const BlogPostForm: React.FC<BlogPostFormProps> = ({ post }) => {
+  const router = useRouter();
+  const isEditing = post !== undefined;
+
+  const [formData, setFormData] = useState({
+    title: post?.title || '',
+    excerpt: post?.excerpt || '',
+    imageUrl: post?.imageUrl || '',
   });
-
-  useEffect(() => {
-    if (isEditing && postId) {
-      // In a real app with many posts, you would fetch the specific post by ID
-      // fetch(`/api/posts/${postId}`).then(res => res.json()).then(setFormData)
-      // For this example, we find it in the props, but a direct fetch is better.
-      fetch(`/api/posts`)
-        .then(res => res.json())
-        .then(posts => {
-            const postToEdit = posts.find((p: BlogPost) => p.id === postId);
-            if (postToEdit) {
-                setFormData(postToEdit);
-            }
-        });
-    }
-  }, [isEditing, postId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isEditing && postId) {
-        if(onUpdate) onUpdate(postId, formData as BlogPost);
+    
+    const url = isEditing ? `/api/posts/${post?._id}` : '/api/posts';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+        router.push('/admin/dashboard');
+        router.refresh(); // Important to refresh server components
     } else {
-        if(onAdd) onAdd(formData);
+        alert(`Failed to ${isEditing ? 'update' : 'create'} post.`);
     }
-    navigate('/admin/dashboard');
   };
 
   return (
@@ -98,7 +99,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ onAdd, onUpdate }) => {
             <div className="flex justify-end gap-4 pt-4">
                 <button
                     type="button"
-                    onClick={() => navigate('/admin/dashboard')}
+                    onClick={() => router.push('/admin/dashboard')}
                     className="py-2 px-6 border border-slate-300 rounded-md shadow-sm text-md font-medium text-slate-700 bg-white hover:bg-slate-50"
                 >
                     Cancel

@@ -1,14 +1,21 @@
 import React from 'react';
-import type { BlogPost } from '../App';
+import Link from 'next/link';
 
-const BlogPostCard: React.FC<{ title: string; excerpt: string; imageUrl: string }> = ({ title, excerpt, imageUrl }) => {
+interface BlogPost {
+    _id: string;
+    title: string;
+    excerpt: string;
+    imageUrl: string;
+}
+
+const BlogPostCard: React.FC<{ post: BlogPost }> = ({ post }) => {
     return (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
-            <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
+            <img src={post.imageUrl} alt={post.title} className="w-full h-52 object-cover" />
             <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold text-slate-800 mb-2">{title}</h3>
-                <p className="text-slate-600 mb-4 flex-grow">{excerpt}</p>
-                <a href="#" className="font-semibold text-amber-500 hover:text-amber-600 transition-colors self-start">Read More &rarr;</a>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{post.title}</h3>
+                <p className="text-slate-600 mb-4 flex-grow">{post.excerpt}</p>
+                <Link href={`/blog/${post._id}`} className="font-semibold text-amber-500 hover:text-amber-600 transition-colors self-start">Read More &rarr;</Link>
             </div>
         </div>
     );
@@ -27,10 +34,8 @@ const BlogPage: React.FC<{ blogPosts: BlogPost[] }> = ({ blogPosts }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post) => (
                  <BlogPostCard 
-                    key={post.id}
-                    title={post.title}
-                    excerpt={post.excerpt}
-                    imageUrl={post.imageUrl}
+                    key={post._id}
+                    post={post}
                 />
             ))}
         </div>
