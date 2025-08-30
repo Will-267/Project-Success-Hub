@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -13,50 +13,71 @@ import BlogPostForm from './components/BlogPostForm';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export interface BlogPost {
+    id: string;
     title: string;
     excerpt: string;
     imageUrl: string;
 }
 
-const initialBlogPosts: BlogPost[] = [
-    {
-        title: "5 Common Mistakes Students Make in Project Writing",
-        excerpt: "Avoid these pitfalls to ensure your project stays on track. We break down the common errors and how to fix them before they become big problems.",
-        imageUrl: "https://picsum.photos/seed/blog1_new/400/300"
-    },
-    {
-        title: "How to Use AI Ethically in Your Research",
-        excerpt: "Artificial Intelligence is a powerful tool, but using it correctly is key. Learn how to leverage AI for literature reviews and data analysis without plagiarism.",
-        imageUrl: "https://picsum.photos/seed/blog2_new/400/300"
-    },
-    {
-        title: "Choosing a Winning Project Topic in 2024",
-        excerpt: "The foundation of a great project is a great topic. Discover our framework for finding a topic that is interesting, relevant, and achievable.",
-        imageUrl: "https://picsum.photos/seed/blog3_new/400/300"
-    }
-];
-
 const App: React.FC = () => {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(initialBlogPosts);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
 
-  const handleAddPost = (post: BlogPost) => {
-      setBlogPosts(prevPosts => [post, ...prevPosts]);
+  useEffect(() => {
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(setBlogPosts)
+      .catch(error => console.error("Failed to fetch posts:", error));
+  }, []);
+
+  const handleAddPost = (post: Omit<BlogPost, 'id'>) => {
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify(post),
+    })
+    .then(res => res.json())
+    .then(newPost => {
+      setBlogPosts(prevPosts => [newPost, ...prevPosts]);
+    });
   };
 
-  const handleUpdatePost = (index: number, updatedPost: BlogPost) => {
-      setBlogPosts(prevPosts => {
-          const newPosts = [...prevPosts];
-          newPosts[index] = updatedPost;
-          return newPosts;
+  const handleUpdatePost = (id: string, updatedPost: BlogPost) => {
+    fetch(`/api/posts/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify(updatedPost),
+    })
+    .then(res => res.json())
+    .then(returnedPost => {
+      setBlogPosts(prevPosts => 
+        prevPosts.map(p => p.id === id ? returnedPost : p)
+      );
+    });
+  };
+
+  const handleDeletePost = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      fetch(`/api/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      })
+      .then(res => {
+        if(res.ok) {
+          setBlogPosts(prevPosts => prevPosts.filter(p => p.id !== id));
+        } else {
+          alert('Failed to delete post.');
+        }
       });
+    }
   };
-
-  const handleDeletePost = (index: number) => {
-      if (window.confirm('Are you sure you want to delete this post?')) {
-          setBlogPosts(prevPosts => prevPosts.filter((_, i) => i !== index));
-      }
-  };
-
 
   return (
     <HashRouter>

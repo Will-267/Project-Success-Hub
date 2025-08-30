@@ -1,0 +1,22 @@
+{
+  "posts": [
+    {
+      "id": "post_1",
+      "title": "5 Common Mistakes Students Make in Project Writing",
+      "excerpt": "Avoid these pitfalls to ensure your project stays on track. We break down the common errors and how to fix them before they become big problems.",
+      "imageUrl": "https://picsum.photos/seed/blog1_new/400/300"
+    },
+    {
+      "id": "post_2",
+      "title": "How to Use AI Ethically in Your Research",
+      "excerpt": "Artificial Intelligence is a powerful tool, but using it correctly is key. Learn how to leverage AI for literature reviews and data analysis without plagiarism.",
+      "imageUrl": "https://picsum.photos/seed/blog2_new/400/300"
+    },
+    {
+      "id": "post_3",
+      "title": "Choosing a Winning Project Topic in 2024",
+      "excerpt": "The foundation of a great project is a great topic. Discover our framework for finding a topic that is interesting, relevant, and achievable.",
+      "imageUrl": "https://picsum.photos/seed/blog3_new/400/300"
+    }
+  ]
+}

@@ -129,7 +129,7 @@ const HomePage: React.FC<{ blogPosts: BlogPost[] }> = ({ blogPosts }) => {
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.slice(0, 3).map(post => (
                 <BlogPostCard 
-                    key={post.title}
+                    key={post.id}
                     title={post.title}
                     excerpt={post.excerpt}
                     imageUrl={post.imageUrl}

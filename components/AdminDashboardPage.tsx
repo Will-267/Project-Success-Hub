@@ -4,14 +4,14 @@ import type { BlogPost } from '../App';
 
 interface AdminDashboardPageProps {
   posts: BlogPost[];
-  handleDelete: (index: number) => void;
+  handleDelete: (id: string) => void;
 }
 
 const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ posts, handleDelete }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminAuthenticated');
+    localStorage.removeItem('authToken');
     navigate('/admin/login');
   };
 
@@ -47,19 +47,19 @@ const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ posts, handleDe
             </thead>
             <tbody>
               {posts.length > 0 ? (
-                posts.map((post, index) => (
-                  <tr key={index} className="border-b border-slate-100">
+                posts.map((post) => (
+                  <tr key={post.id} className="border-b border-slate-100">
                     <td className="p-4 align-top text-slate-800 font-semibold">{post.title}</td>
                     <td className="p-4 align-top text-slate-600 text-sm max-w-lg">{post.excerpt}</td>
                     <td className="p-4 align-top text-right space-x-2 whitespace-nowrap">
                       <Link
-                        to={`/admin/edit/${index}`}
+                        to={`/admin/edit/${post.id}`}
                         className="text-sm font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-md transition-colors"
                       >
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(index)}
+                        onClick={() => handleDelete(post.id)}
                         className="text-sm font-medium text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md transition-colors"
                       >
                         Delete

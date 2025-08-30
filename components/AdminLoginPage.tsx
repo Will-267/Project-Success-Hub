@@ -4,17 +4,30 @@ import { useNavigate } from 'react-router-dom';
 const AdminLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd validate credentials against a backend.
-    // Here, we'll use a simple hardcoded check for demonstration.
-    if (email === 'admin@example.com' && password === 'password') {
-      localStorage.setItem('isAdminAuthenticated', 'true');
+    setError('');
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid credentials. Please try again.');
+      }
+
+      const { token } = await response.json();
+      localStorage.setItem('authToken', token);
       navigate('/admin/dashboard');
-    } else {
-      alert('Invalid credentials. Please try again.');
+
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -50,6 +63,7 @@ const AdminLoginPage: React.FC = () => {
                 placeholder="password"
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <div>
               <button
                 type="submit"

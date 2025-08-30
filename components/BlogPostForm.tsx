@@ -3,28 +3,37 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { BlogPost } from '../App';
 
 interface BlogPostFormProps {
-  posts?: BlogPost[];
-  onAdd?: (post: BlogPost) => void;
-  onUpdate?: (index: number, post: BlogPost) => void;
+  posts?: BlogPost[]; // Keep for finding post data on edit
+  onAdd?: (post: Omit<BlogPost, 'id'>) => void;
+  onUpdate?: (id: string, post: BlogPost) => void;
 }
 
-const BlogPostForm: React.FC<BlogPostFormProps> = ({ posts, onAdd, onUpdate }) => {
+const BlogPostForm: React.FC<BlogPostFormProps> = ({ onAdd, onUpdate }) => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const isEditing = postId !== undefined;
-  const postIndex = isEditing ? parseInt(postId, 10) : -1;
 
-  const [formData, setFormData] = useState<BlogPost>({
+  const [formData, setFormData] = useState<Omit<BlogPost, 'id'> & { id?: string }>({
     title: '',
     excerpt: '',
     imageUrl: '',
   });
 
   useEffect(() => {
-    if (isEditing && posts && postIndex >= 0 && postIndex < posts.length) {
-      setFormData(posts[postIndex]);
+    if (isEditing && postId) {
+      // In a real app with many posts, you would fetch the specific post by ID
+      // fetch(`/api/posts/${postId}`).then(res => res.json()).then(setFormData)
+      // For this example, we find it in the props, but a direct fetch is better.
+      fetch(`/api/posts`)
+        .then(res => res.json())
+        .then(posts => {
+            const postToEdit = posts.find((p: BlogPost) => p.id === postId);
+            if (postToEdit) {
+                setFormData(postToEdit);
+            }
+        });
     }
-  }, [isEditing, posts, postIndex]);
+  }, [isEditing, postId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -33,8 +42,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ posts, onAdd, onUpdate }) =
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isEditing) {
-        if(onUpdate) onUpdate(postIndex, formData);
+    if (isEditing && postId) {
+        if(onUpdate) onUpdate(postId, formData as BlogPost);
     } else {
         if(onAdd) onAdd(formData);
     }

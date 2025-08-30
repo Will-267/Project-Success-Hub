@@ -8,6 +8,7 @@ const ContactPage: React.FC = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -17,21 +18,29 @@ const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
-    // In a real application, you would send the form data to a backend server
-    // or use a third-party service like EmailJS to handle sending the email
-    // to williameleazar51@gmail.com.
-    // It is insecure to store email credentials on the frontend.
-    // This is a simulation of that process.
-    console.log('Form data to be sent:', formData);
-    
-    // Simulate network request
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setLoading(false);
-    setSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
-    setTimeout(() => setSubmitted(false), 5000); // Reset message after 5 seconds
+      if (!response.ok) {
+        throw new Error('Something went wrong. Please try again.');
+      }
+
+      setSubmitted(true);
+      setFormData({ name: '', email: '', message: '' });
+      setTimeout(() => setSubmitted(false), 5000); // Reset message after 5 seconds
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,6 +98,7 @@ const ContactPage: React.FC = () => {
                     className="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-md shadow-sm focus:ring-amber-400 focus:border-amber-400"
                     ></textarea>
                 </div>
+                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 <div>
                     <button
                     type="submit"

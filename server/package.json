@@ -1,0 +1,20 @@
+{
+  "name": "project-success-hub-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the blog and contact form.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "lowdb": "^7.0.1",
+    "nanoid": "^5.0.7",
+    "nodemailer": "^6.9.13"
+  }
+}

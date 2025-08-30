@@ -25,9 +25,9 @@ const BlogPage: React.FC<{ blogPosts: BlogPost[] }> = ({ blogPosts }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
+            {blogPosts.map((post) => (
                  <BlogPostCard 
-                    key={index}
+                    key={post.id}
                     title={post.title}
                     excerpt={post.excerpt}
                     imageUrl={post.imageUrl}
