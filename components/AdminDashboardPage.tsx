@@ -20,7 +20,7 @@ const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ initialPosts })
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: '/admin/login' });
+    await signOut({ redirect: true, callbackUrl: '/admin' });
   };
 
   const handleDelete = async (id: string) => {
